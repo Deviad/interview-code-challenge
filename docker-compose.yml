@@ -1,0 +1,21 @@
+
+
+version: '3'
+services:
+  app:
+    image: localhost:5000/neobank-code-challenge:latest
+    container_name: neobank-code-challenge
+    ports:
+      - "8080:8888"
+    networks:
+      - app-network
+    environment:
+      - "MAVEN_OPTS=--enable-preview"
+    volumes:
+      - scammazon_db:/root/scammazon
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+  scammazon_db: {}
