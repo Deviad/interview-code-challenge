@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import neobank.backend.domain.valueobject.CartId;
 import neobank.backend.domain.valueobject.CartQuantity;
 import neobank.backend.domain.valueobject.CartStatus;
@@ -142,7 +143,8 @@ public class CartAggregate implements Cloneable {
   }
 
   @Override
-  public CartAggregate clone() throws CloneNotSupportedException {
+  @SneakyThrows
+  public CartAggregate clone()  {
     var clone = (CartAggregate) super.clone();
     clone.setCartProducts(this.getCartProducts());
     clone.setCartStatus(this.getCartStatus());

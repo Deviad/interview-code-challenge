@@ -2,6 +2,7 @@ package neobank.backend.application.commandservice;
 
 import io.vavr.API;
 import io.vavr.Tuple2;
+import io.vavr.control.Try;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import neobank.backend.adapter.CartAdapter;
@@ -12,6 +13,7 @@ import neobank.backend.domain.aggregate.ProductAggregate;
 import neobank.backend.domain.valueobject.CartQuantity;
 import neobank.backend.domain.valueobject.CartStatus;
 import neobank.backend.domain.valueobject.SKU;
+import neobank.backend.infrastructure.WrappedException;
 import neobank.backend.persistence.entity.Cart;
 import neobank.backend.persistence.entity.CartProduct;
 import neobank.backend.persistence.entity.Product;
@@ -117,7 +119,8 @@ public class CartService {
   CartAggregate updateFinalPrice(
       Map<SKU, CartQuantity> productsChangeRequest, CartAggregate cartAggregate) {
 
-    var result = API.CheckedFunction(cartAggregate::clone).unchecked().get();
+    var result = Try.of(cartAggregate::clone)
+            .getOrElseThrow(e-> new WrappedException(e.getMessage(), e.getCause()));
 
     Map<ProductAggregate, CartQuantity> map =
         mapProductAggregateWithCartQuantity(productsChangeRequest);
@@ -128,7 +131,8 @@ public class CartService {
 
   CartAggregate updateProductQuantities(
       Map<SKU, CartQuantity> productsChangeRequest, CartAggregate cartAggregate) {
-    var result = API.CheckedFunction(cartAggregate::clone).unchecked().get();
+    var result = Try.of(cartAggregate::clone)
+            .getOrElseThrow(e-> new WrappedException(e.getMessage(), e.getCause()));
     Map<ProductAggregate, CartQuantity> map =
         mapProductAggregateWithCartQuantity(productsChangeRequest);
     map.forEach(result::changeProductQuantity);
